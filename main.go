@@ -31,10 +31,23 @@ var items = []item{
 func main() {
 	router := gin.Default()
 	router.GET("/items", getItems)
+	router.POST("/items", postItems)
 
 	router.Run("localhost:5555")
 }
 
 func getItems(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, items)
+}
+
+func postItems(c *gin.Context) {
+	var newItem item
+
+	if err := c.BindJSON(&newItem); err != nil {
+		return
+	}
+
+	items = append(items, newItem)
+
+	c.IndentedJSON(http.StatusCreated, newItem)
 }
